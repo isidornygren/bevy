@@ -160,6 +160,14 @@ impl AsAssetId for Sprite {
     }
 }
 
+#[derive(Default, Debug, Clone, Reflect, PartialEq)]
+#[reflect(Debug, Default, Clone)]
+/// A sprite instance is rendered from a texture atlas
+pub struct SpriteInstance {
+    pub index: usize,
+    pub offset: Vec2,
+}
+
 /// Controls how the image is altered when scaled.
 #[derive(Default, Debug, Clone, Reflect, PartialEq)]
 #[reflect(Debug, Default, Clone)]
@@ -182,6 +190,8 @@ pub enum SpriteImageMode {
         /// *original texture size* are above this value.
         stretch_value: f32,
     },
+    /// The texture will be rendered by the manually configured sprite instances in this vector.
+    Instances(Vec<SpriteInstance>),
 }
 
 impl SpriteImageMode {
@@ -190,7 +200,9 @@ impl SpriteImageMode {
     pub fn uses_slices(&self) -> bool {
         matches!(
             self,
-            SpriteImageMode::Sliced(..) | SpriteImageMode::Tiled { .. }
+            SpriteImageMode::Sliced(..)
+                | SpriteImageMode::Tiled { .. }
+                | SpriteImageMode::Instances(..)
         )
     }
 
